@@ -27,7 +27,9 @@ function today() {
 }
 
 function isYesterday(date: string): boolean {
+  if (!date) return false
   const d = new Date(date)
+  if (isNaN(d.getTime())) return false
   d.setDate(d.getDate() + 1)
   return d.toISOString().slice(0, 10) === today()
 }

@@ -3,6 +3,27 @@ import type { VocabItem } from '../types'
 import SpeakButton from './SpeakButton'
 import { usePronunciationContext } from '../contexts/PronunciationContext'
 
+function CardImage({ item }: { item: VocabItem }) {
+  const [imgFailed, setImgFailed] = useState(false)
+
+  useEffect(() => { setImgFailed(false) }, [item.id])
+
+  if (item.imageUrl && !imgFailed) {
+    return (
+      <img
+        src={item.imageUrl}
+        alt={item.meaning}
+        className="h-36 w-36 rounded-2xl object-cover shadow-md select-none"
+        onError={() => setImgFailed(true)}
+      />
+    )
+  }
+  if (item.imageEmoji) {
+    return <span className="text-[5.5rem] leading-none select-none">{item.imageEmoji}</span>
+  }
+  return <p className="text-8xl font-light leading-none text-gray-900">{item.character}</p>
+}
+
 interface Props {
   vocab: VocabItem[]
   onFinish: (correct: number, total: number) => void
@@ -91,14 +112,10 @@ export default function FlashcardPractice({ vocab, onFinish }: Props) {
           )}
 
           <div className="flex h-full flex-col items-center justify-center gap-4 pt-2 text-center">
-            {/* Front: emoji image hint */}
+            {/* Front: photo or emoji hint */}
             {!flipped && (
               <>
-                {card.imageEmoji ? (
-                  <span className="text-[5.5rem] leading-none select-none">{card.imageEmoji}</span>
-                ) : (
-                  <p className="text-8xl font-light leading-none text-gray-900">{card.character}</p>
-                )}
+                <CardImage item={card} />
                 <p className="mt-2 text-sm font-medium text-gray-400 group-hover:text-brand-400 transition">
                   Tap to reveal
                 </p>

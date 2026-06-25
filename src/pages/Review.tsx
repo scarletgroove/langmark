@@ -4,6 +4,28 @@ import { useSRS } from '../hooks/useSRS'
 import { useProgress } from '../hooks/useProgress'
 import { usePronunciationContext } from '../contexts/PronunciationContext'
 import SpeakButton from '../components/SpeakButton'
+import type { VocabItem } from '../types'
+
+function CardImage({ item }: { item: VocabItem }) {
+  const [imgFailed, setImgFailed] = useState(false)
+
+  useEffect(() => { setImgFailed(false) }, [item.id])
+
+  if (item.imageUrl && !imgFailed) {
+    return (
+      <img
+        src={item.imageUrl}
+        alt={item.meaning}
+        className="h-36 w-36 rounded-2xl object-cover shadow-md select-none"
+        onError={() => setImgFailed(true)}
+      />
+    )
+  }
+  if (item.imageEmoji) {
+    return <span className="text-[5.5rem] leading-none select-none">{item.imageEmoji}</span>
+  }
+  return <p className="text-8xl font-light leading-none text-gray-900">{item.character}</p>
+}
 
 type CardState = 'front' | 'back' | 'answered'
 
@@ -192,11 +214,7 @@ export default function Review() {
           <div className="flex h-full flex-col items-center justify-center gap-4 pt-2 text-center">
             {cardState === 'front' && (
               <>
-                {card.vocab.imageEmoji ? (
-                  <span className="text-[5.5rem] leading-none select-none">{card.vocab.imageEmoji}</span>
-                ) : (
-                  <p className="text-8xl font-light leading-none text-gray-900">{card.vocab.character}</p>
-                )}
+                <CardImage item={card.vocab} />
                 <p className="mt-2 text-sm font-medium text-gray-400 group-hover:text-brand-400 transition">
                   Tap to reveal
                 </p>

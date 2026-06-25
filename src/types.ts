@@ -4,6 +4,7 @@ export interface VocabItem {
   pinyin: string
   meaning: string
   imageEmoji?: string
+  imageUrl?: string
   example?: string
   examplePinyin?: string
   exampleMeaning?: string
